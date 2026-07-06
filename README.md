@@ -180,7 +180,7 @@ http://127.0.0.1:8000
 ```bash
 git clone https://github.com/tenouye-marten/sistem-optimasi-rute.git
 
-cd NAMA_REPOSITORY
+cd sistem-optimasi-rute
 
 composer install
 
