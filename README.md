@@ -178,7 +178,7 @@ http://127.0.0.1:8000
 # Urutan Instalasi Singkat
 
 ```bash
-git clone https://github.com/USERNAME/NAMA_REPOSITORY.git
+git clone https://github.com/tenouye-marten/sistem-optimasi-rute.git
 
 cd NAMA_REPOSITORY
 
