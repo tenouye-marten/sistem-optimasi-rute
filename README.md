@@ -25,13 +25,13 @@ Pastikan perangkat telah terpasang:
 Buka Git Bash kemudian jalankan:
 
 ```bash
-git clone https://github.com/USERNAME/NAMA_REPOSITORY.git
+git clone https://github.com/tenouye-marten/sistem-optimasi-rute.git
 ```
 
 Contoh
 
 ```bash
-git clone https://github.com/tenouye-marten/sirps.git
+git clone https://github.com/tenouye-marten/sistem-optimasi-rute.git
 ```
 
 Masuk ke folder project
