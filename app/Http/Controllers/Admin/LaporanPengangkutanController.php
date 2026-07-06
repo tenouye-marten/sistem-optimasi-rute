@@ -1,0 +1,329 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Driver;
+use App\Models\Pengangkutan;
+
+use Illuminate\Http\Request;
+use Mpdf\Mpdf;
+
+class LaporanPengangkutanController extends Controller
+{
+    /**
+     * ==========================================================
+     * Laporan Pengangkutan
+     * ==========================================================
+     */
+    public function index(Request $request)
+    {
+        $tanggalAwal = $request->tanggal_awal;
+        $tanggalAkhir = $request->tanggal_akhir;
+        $driver = $request->driver;
+        $status = $request->status;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Query Laporan
+        |--------------------------------------------------------------------------
+        */
+
+        $query = Pengangkutan::with([
+
+            'driver',
+
+            'optimasi',
+
+            'optimasi.kendaraan',
+
+            'details',
+
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Filter Tanggal
+        |--------------------------------------------------------------------------
+        */
+
+        if ($tanggalAwal && $tanggalAkhir) {
+
+            $query->whereBetween(
+                'tanggal',
+                [
+                    $tanggalAwal,
+                    $tanggalAkhir
+                ]
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Filter Driver
+        |--------------------------------------------------------------------------
+        */
+
+        if ($driver) {
+
+            $query->where(
+                'driver_id',
+                $driver
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Filter Status
+        |--------------------------------------------------------------------------
+        */
+
+        if ($status) {
+
+            $query->where(
+                'status',
+                $status
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Data
+        |--------------------------------------------------------------------------
+        */
+
+        $pengangkutans = $query
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Statistik
+        |--------------------------------------------------------------------------
+        */
+
+        $statistik = clone $query;
+
+        $totalPengangkutan = $statistik->count();
+
+        $selesai = (clone $query)
+            ->where('status', 'Selesai')
+            ->count();
+
+        $berjalan = (clone $query)
+            ->where('status', 'Sedang Berjalan')
+            ->count();
+
+        $belum = (clone $query)
+            ->where('status', 'Belum Berangkat')
+            ->count();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Total Sampah Diangkut
+        |--------------------------------------------------------------------------
+        */
+
+        $totalSampah = (clone $query)
+            ->sum('muatan_sekarang');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Total TPS
+        |--------------------------------------------------------------------------
+        */
+
+        $totalTPS = 0;
+
+        foreach ($pengangkutans as $item) {
+
+            $totalTPS += $item->details->count();
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Driver
+        |--------------------------------------------------------------------------
+        */
+
+        $drivers = Driver::where(
+                'status',
+                'Aktif'
+            )
+            ->orderBy('nama')
+            ->get();
+
+        return view(
+            'admin.laporan.index',
+            compact(
+
+                'pengangkutans',
+
+                'drivers',
+
+                'tanggalAwal',
+
+                'tanggalAkhir',
+
+                'driver',
+
+                'status',
+
+                'totalPengangkutan',
+
+                'selesai',
+
+                'berjalan',
+
+                'belum',
+
+                'totalSampah',
+
+                'totalTPS'
+
+            )
+        );
+    }
+
+    /**
+     * ==========================================================
+     * Print
+     * ==========================================================
+     */
+    public function print(Request $request)
+{
+    $tanggalAwal = $request->tanggal_awal;
+    $tanggalAkhir = $request->tanggal_akhir;
+    $driver = $request->driver;
+    $status = $request->status;
+
+    $query = Pengangkutan::with([
+        'driver',
+        'optimasi.kendaraan',
+        'details'
+    ]);
+
+    if ($tanggalAwal && $tanggalAkhir) {
+        $query->whereBetween('tanggal', [
+            $tanggalAwal,
+            $tanggalAkhir
+        ]);
+    }
+
+    if ($driver) {
+        $query->where('driver_id', $driver);
+    }
+
+    if ($status) {
+        $query->where('status', $status);
+    }
+
+    $pengangkutans = $query->get();
+
+    $totalPengangkutan = $pengangkutans->count();
+
+    $totalTPS = $pengangkutans->sum(function ($item) {
+        return $item->details->count();
+    });
+
+    $totalSampah = $pengangkutans->sum('muatan_sekarang');
+
+    return view(
+        'admin.laporan.print',
+        compact(
+            'pengangkutans',
+            'tanggalAwal',
+            'tanggalAkhir',
+            'totalPengangkutan',
+            'totalTPS',
+            'totalSampah'
+        )
+    );
+}
+
+    /**
+     * ==========================================================
+     * PDF
+     * ==========================================================
+     */
+  
+    public function pdf(Request $request)
+{
+    $tanggalAwal = $request->tanggal_awal;
+    $tanggalAkhir = $request->tanggal_akhir;
+    $driver = $request->driver;
+    $status = $request->status;
+
+    $query = Pengangkutan::with([
+        'driver',
+        'optimasi.kendaraan',
+        'details',
+    ]);
+
+    if ($tanggalAwal && $tanggalAkhir) {
+        $query->whereBetween('tanggal', [
+            $tanggalAwal,
+            $tanggalAkhir
+        ]);
+    }
+
+    if ($driver) {
+        $query->where('driver_id', $driver);
+    }
+
+    if ($status) {
+        $query->where('status', $status);
+    }
+
+    $pengangkutans = $query
+        ->orderBy('tanggal')
+        ->get();
+
+    $totalPengangkutan = $pengangkutans->count();
+
+    $totalTPS = $pengangkutans->sum(function ($item) {
+        return $item->details->count();
+    });
+
+    $totalSampah = $pengangkutans->sum('muatan_sekarang');
+
+    $html = view(
+        'admin.laporan.pdf',
+        compact(
+            'pengangkutans',
+            'tanggalAwal',
+            'tanggalAkhir',
+            'totalPengangkutan',
+            'totalTPS',
+            'totalSampah'
+        )
+    )->render();
+
+    $mpdf = new Mpdf([
+        'format' => 'A4-L',
+        'margin_left' => 10,
+        'margin_right' => 10,
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+    ]);
+
+    $mpdf->SetTitle('Laporan Pengangkutan');
+
+    $mpdf->WriteHTML($html);
+
+    return response(
+        $mpdf->Output(
+            'laporan-pengangkutan.pdf',
+            \Mpdf\Output\Destination::STRING_RETURN
+        ),
+        200,
+        [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="laporan-pengangkutan.pdf"',
+        ]
+    );
+}
+
+}
