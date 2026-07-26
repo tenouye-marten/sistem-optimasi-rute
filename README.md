@@ -74,14 +74,14 @@ php artisan key:generate
 ```
 
 ### 5. Konfigurasi Database
-Buka aplikasi pengelola database (seperti **phpMyAdmin** atau **DBeaver**), lalu buat sebuah database kosong baru, contohnya: `sistem_optimasi_rute`.
+Buka aplikasi pengelola database (seperti **phpMyAdmin** atau **DBeaver**), lalu buat sebuah database kosong baru, contohnya: `sirps`.
 
 Buka file `.env` di text editor Anda dan sesuaikan konfigurasi database:
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=sistem_optimasi_rute
+DB_DATABASE=sirps
 DB_USERNAME=root
 DB_PASSWORD=
 ```
