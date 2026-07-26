@@ -16,7 +16,11 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        return view('profile.edit');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->load('driver');
+
+        return view('profile.edit', compact('user'));
     }
 
     /**
