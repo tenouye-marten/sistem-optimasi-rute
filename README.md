@@ -1,248 +1,151 @@
-# 🚛 Sistem Optimasi Rute Pengangkutan Sampah
-## Menggunakan Metode Nearest Neighbor
+# 🚛 SIMPAS DLH - Sistem Optimasi Rute Pengangkutan Sampah
 
-Aplikasi berbasis web untuk mengoptimalkan rute pengangkutan sampah pada Dinas Lingkungan Hidup Kabupaten Jayapura menggunakan Laravel 12.
-
----
-
-# Persyaratan Sistem
-
-Pastikan perangkat telah terpasang:
-
-- PHP 8.2.x
-- Composer
-- Node.js (LTS)
-- Git Bash
-- XAMPP (Apache & MySQL)
-- Laravel 12
+Sistem Informasi Optimasi Rute Pengangkutan Sampah berbasis web untuk **Dinas Lingkungan Hidup (DLH) Kabupaten Jayapura**. Aplikasi ini dirancang untuk mengoptimalkan rute perjalanan armada pengangkut sampah dari titik-titik TPS (Tempat Penampungan Sementara) menuju TPA (Tempat Pemrosesan Akhir) menggunakan metode **Nearest Neighbor**.
 
 ---
 
-# Cara Instalasi
+## 🚀 Fitur Utama
 
-## 1. Clone Repository
+- **Optimasi Rute (Nearest Neighbor)**: Menghitung dan memberikan rekomendasi rute terpendek dan paling efisien untuk armada pengangkut sampah.
+- **Manajemen Data TPS & TPA**: Pengelolaan koordinat lokasi, kapasitas, dan status TPS di wilayah Kabupaten Jayapura.
+- **Multi-Role Access**:
+  - **Admin**: Mengelola data master TPS, TPA, armada driver, serta penjadwalan rute.
+  - **Kepala DLH**: Memantau grafik pengangkutan sampah dan laporan statistik operasional.
+  - **Driver**: Melihat instruksi rute pengangkutan harian dan memperbarui status tugas.
+- **Laporan & Cetak PDF**: Export laporan rute dan pengangkutan dalam format PDF & Print.
 
-Buka Git Bash kemudian jalankan:
+---
 
+## 🛠️ Teknologi yang Digunakan
+
+- **Framework Backend**: Laravel 12 (PHP >= 8.2)
+- **Frontend & Styling**: Blade, Tailwind CSS, Alpine.js, Vite
+- **Peta & Visualisasi Rute**: Leaflet.js / OpenStreetMap
+- **Database**: MySQL / MariaDB
+- **Icons & Typography**: FontAwesome 6, Plus Jakarta Sans
+
+---
+
+## 📋 Persyaratan Sistem
+
+Pastikan perangkat Anda telah terpasang software berikut:
+
+- **PHP**: versi 8.2.x atau lebih baru
+- **Composer**: versi 2.x
+- **Node.js**: versi 18.x atau lebih baru (termasuk NPM)
+- **Database Server**: MySQL (XAMPP / Laragon / Native MySQL)
+- **Git**
+
+---
+
+## ⚙️ Panduan Instalasi
+
+Ikuti langkah-langkah berikut untuk menjalankan project di lingkungan lokal:
+
+### 1. Clone Repository
 ```bash
 git clone https://github.com/tenouye-marten/sistem-optimasi-rute.git
+cd sistem-optimasi-rute
 ```
 
-Contoh
-
-```bash
-git clone https://github.com/tenouye-marten/sistem-optimasi-rute.git
-```
-
-Masuk ke folder project
-
-```bash
-cd sirps
-```
-
----
-
-## 2. Install Dependency
-
-Install package Laravel
-
+### 2. Install Dependency
+Install paket dependency PHP (Composer) dan JavaScript (NPM):
 ```bash
 composer install
-```
-
-Install package Node
-
-```bash
 npm install
 ```
 
----
+### 3. Konfigurasi Environment (`.env`)
+Salin file contoh `.env.example` menjadi `.env`:
 
-## 3. Copy File Environment
-
-Windows
-
+*Windows (Command Prompt / PowerShell):*
 ```bash
 copy .env.example .env
 ```
 
-atau
-
+*Linux / macOS / Git Bash:*
 ```bash
 cp .env.example .env
 ```
 
----
-
-## 4. Generate Application Key
-
+### 4. Generate Application Key
 ```bash
 php artisan key:generate
 ```
 
----
+### 5. Konfigurasi Database
+Buka aplikasi pengelola database (seperti **phpMyAdmin** atau **DBeaver**), lalu buat sebuah database kosong baru, contohnya: `sistem_optimasi_rute`.
 
-# Konfigurasi Database
-
-Buka **XAMPP** kemudian jalankan:
-
-- Apache
-- MySQL
-
-Selanjutnya buka **phpMyAdmin**
-
-Buat database baru, misalnya
-
-```
-sirps
-```
-
-> Cukup buat database kosong, tidak perlu membuat tabel.
-
----
-
-## 5. Atur File .env
-
-Buka file
-
-```
-.env
-```
-
-Kemudian ubah konfigurasi database
-
+Buka file `.env` di text editor Anda dan sesuaikan konfigurasi database:
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=sirps
+DB_DATABASE=sistem_optimasi_rute
 DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Sesuaikan jika username atau password MySQL berbeda.
-
----
-
-## 6. Jalankan Migration dan Seeder
-
-Karena database masih kosong, jalankan:
-
+### 6. Jalankan Migration dan Seeder Data
+Jalankan migrasi tabel beserta seeder untuk mengisi data awal (pengguna, TPS, TPA, dll):
 ```bash
 php artisan migrate:fresh --seed
 ```
 
-Perintah tersebut akan:
-
-- Membuat seluruh tabel database
-- Mengisi data awal (Seeder)
-
----
-
-## 7. Membuat Storage Link
-
+### 7. Buat Storage Link
 ```bash
 php artisan storage:link
 ```
 
----
+### 8. Jalankan Aplikasi
+Buka dua jendela terminal terpisah:
 
-## 8. Menjalankan Vite
-
-Buka terminal baru kemudian jalankan
-
+**Terminal 1 (Vite Asset Bundler):**
 ```bash
 npm run dev
 ```
 
-Biarkan terminal ini tetap berjalan.
-
----
-
-## 9. Menjalankan Laravel
-
-Buka terminal baru
-
+**Terminal 2 (Laravel Development Server):**
 ```bash
 php artisan serve
 ```
 
-Aplikasi dapat diakses melalui
-
-```
-http://127.0.0.1:8000
-```
+Aplikasi siap diakses melalui browser pada alamat:
+`http://127.0.0.1:8000`
 
 ---
 
-# Urutan Instalasi Singkat
+## 🔑 Akun Default (Login Seeder)
+
+Setelah menjalankan `php artisan migrate:fresh --seed`, Anda dapat menguji login menggunakan akun bawaan berikut:
+
+| Peran (Role) | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@dlh.com` | `password` |
+| **Kepala DLH** | `kepala@dlh.com` | `password` |
+| **Driver** | `driver1@dlh.com` | `password` |
+
+---
+
+## ⚡ Ringkasan Perintah Cepat (Quick Setup)
 
 ```bash
 git clone https://github.com/tenouye-marten/sistem-optimasi-rute.git
-
 cd sistem-optimasi-rute
-
 composer install
-
 npm install
-
 copy .env.example .env
-
 php artisan key:generate
-
 php artisan storage:link
-
 php artisan migrate:fresh --seed
-
 npm run dev
-
+# Pada terminal lain:
 php artisan serve
 ```
 
 ---
 
-# Jika Terjadi Error
+## 📜 Lisensi & Hak Cipta
 
-Bersihkan cache Laravel
-
-```bash
-php artisan optimize:clear
-```
-
-Kemudian jalankan kembali
-
-```bash
-php artisan serve
-```
-
----
-
-# Teknologi yang Digunakan
-
-- Laravel 12
-- PHP 8.2.x
-- MySQL
-- Tailwind CSS
-- Alpine.js
-- Leaflet.js
-- Vite
-- JavaScript
-
----
-
-# Catatan
-
-Pastikan:
-
-- Apache aktif
-- MySQL aktif
-- PHP menggunakan versi **8.2.x**
-- Composer sudah terpasang
-- Node.js sudah terpasang
-- Git Bash sudah terpasang
-
----
-
-© 2026  
-**Sistem Optimasi Rute Pengangkutan Sampah Menggunakan Metode Nearest Neighbor**  
+© 2026 **Sistem Optimasi Rute Pengangkutan Sampah (SIMPAS)**  
 Dinas Lingkungan Hidup Kabupaten Jayapura.
