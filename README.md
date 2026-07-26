@@ -117,13 +117,17 @@ Aplikasi siap diakses melalui browser pada alamat:
 
 ## 🔑 Akun Default (Login Seeder)
 
-Setelah menjalankan `php artisan migrate:fresh --seed`, Anda dapat menguji login menggunakan akun bawaan berikut:
+Setelah menjalankan `php artisan migrate:fresh --seed`, Anda dapat menguji login menggunakan akun bawaan berikut (Password default untuk semua akun adalah `password`):
 
-| Peran (Role) | Email | Password |
-| :--- | :--- | :--- |
-| **Admin** | `admin@dlh.com` | `password` |
-| **Kepala DLH** | `kepala@dlh.com` | `password` |
-| **Driver** | `driver1@dlh.com` | `password` |
+| Peran (Role) | Nama Pengguna | Email | Password |
+| :--- | :--- | :--- | :--- |
+| **Admin** | Administrator DLH | `admin@dlh.com` | `password` |
+| **Kepala DLH** | Kepala Dinas | `kepala@dlh.com` | `password` |
+| **Driver 1** | Yohanis Wenda | `driver@dlh.com` | `password` |
+| **Driver 2** | Markus Yoku | `driver2@dlh.com` | `password` |
+| **Driver 3** | Samuel Wally | `driver3@dlh.com` | `password` |
+| **Driver 4** | Petrus Kogoya | `driver4@dlh.com` | `password` |
+| **Driver 5** | Yakobus Mote | `driver5@dlh.com` | `password` |
 
 ---
 
