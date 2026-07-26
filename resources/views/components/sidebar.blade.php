@@ -15,16 +15,16 @@
     <div class="flex flex-col h-full">
 
         {{-- Header Sidebar --}}
-        <div class="px-6 py-5 border-b border-gray-200">
-
-            <h2 class="text-lg font-bold text-gray-800">
-                Dashboard
-            </h2>
-
-            <p class="text-sm text-gray-500">
-                SIMPAS DLH
-            </p>
-
+        <div class="px-6 py-5 border-b border-gray-200 flex items-center gap-3">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo DLH Jayapura" class="w-10 h-10 object-contain drop-shadow-sm">
+            <div>
+                <h2 class="text-base font-bold text-gray-800 leading-tight">
+                    SIMPAS DLH
+                </h2>
+                <p class="text-xs text-gray-500 font-medium">
+                    Kab. Jayapura
+                </p>
+            </div>
         </div>
 
         {{-- Menu --}}

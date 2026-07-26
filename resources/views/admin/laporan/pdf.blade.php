@@ -1,110 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
+    <title>Laporan Pengangkutan Sampah - SIMPAS DLH</title>
     <style>
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
-            font-size: 12px; /* Ditingkatkan sedikit untuk keterbacaan */
+            font-size: 11px;
             line-height: 1.4;
+            color: #111;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #000;
         }
 
-        h2, h3 {
+        .header h3 {
             margin: 0;
+            font-size: 13px;
+            font-weight: bold;
             text-transform: uppercase;
         }
 
-        hr {
-            border: 0;
-            border-top: 2px solid #000;
-            margin: 10px 0 20px;
+        .header h2 {
+            margin: 2px 0;
+            font-size: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
-        table {
+        .header p {
+            margin: 0;
+            font-size: 9px;
+            font-style: italic;
+            color: #444;
+        }
+
+        .document-title {
+            text-align: center;
+            margin: 15px 0 10px;
+        }
+
+        .document-title h4 {
+            margin: 0;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: underline;
+        }
+
+        .document-title p {
+            margin: 3px 0 0;
+            font-size: 10px;
+        }
+
+        table.info-meta {
+            width: 100%;
+            margin-bottom: 12px;
+            font-size: 10px;
+            border-collapse: collapse;
+        }
+
+        table.info-meta td {
+            border: none;
+            padding: 2px;
+        }
+
+        table.data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        th, td {
+        table.data-table th, table.data-table td {
             border: 1px solid #333;
-            padding: 8px;
+            padding: 6px 8px;
         }
 
-        th {
+        table.data-table th {
             background-color: #f2f2f2;
+            font-weight: bold;
             text-align: center;
-        }
-
-        /* Tabel Info (Tanpa Border) */
-        .info { width: 100%; }
-        .info td {
-            border: none;
-            padding: 3px;
+            text-transform: uppercase;
+            font-size: 9px;
         }
 
         .text-center { text-align: center; }
         .text-right { text-align: right; }
+        .font-bold { font-weight: bold; }
 
-        .rekap {
-            width: 300px;
-            margin-top: 10px;
-        }
-
-        .ttd {
+        .summary-wrapper {
             width: 100%;
-            margin-top: 40px;
+            margin-top: 15px;
         }
+
+        table.rekap-table {
+            width: 320px;
+            border-collapse: collapse;
+            float: left;
+        }
+
+        table.rekap-table td {
+            border: 1px solid #666;
+            padding: 4px 8px;
+            font-size: 10px;
+        }
+
         .ttd-box {
             float: right;
-            width: 250px;
+            width: 200px;
             text-align: center;
+            font-size: 10px;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
 
 <body>
+    <!-- Kop Surat -->
     <div class="header">
+        <h3>Pemerintah Kabupaten Jayapura</h3>
         <h2>Dinas Lingkungan Hidup</h2>
-        <h3>Kabupaten Jayapura</h3>
-    </div>
-    
-    <hr>
-
-    <div style="text-align: center; font-weight: bold; margin-bottom: 15px;">
-        LAPORAN PENGANGKUTAN SAMPAH
+        <p>Jl. Raya Sentani - Depapre, Gunung Merah Sentani, Kabupaten Jayapura, Papua</p>
     </div>
 
-    <table class="info">
+    <!-- Judul Dokumen -->
+    <div class="document-title">
+        <h4>Laporan Rekapitulasi Pengangkutan Sampah</h4>
+        @if($tanggalAwal && $tanggalAkhir)
+            <p>Periode: {{ \Carbon\Carbon::parse($tanggalAwal)->format('d M Y') }} s/d {{ \Carbon\Carbon::parse($tanggalAkhir)->format('d M Y') }}</p>
+        @else
+            <p>Periode: Seluruh Data Operasional</p>
+        @endif
+    </div>
+
+    <!-- Info Metadata -->
+    <table class="info-meta">
         <tr>
-            <td width="15%"><strong>Periode</strong></td>
-            <td width="45%">: 
-                @if($tanggalAwal && $tanggalAkhir)
-                    {{ \Carbon\Carbon::parse($tanggalAwal)->format('d M Y') }} s/d {{ \Carbon\Carbon::parse($tanggalAkhir)->format('d M Y') }}
-                @else
-                    Semua Data
-                @endif
-            </td>
-            <td width="15%"><strong>Dicetak</strong></td>
-            <td>: {{ now()->format('d/m/Y H:i') }}</td>
+            <td width="15%"><strong>Dicetak Pada</strong></td>
+            <td width="35%">: {{ now()->translatedFormat('d F Y - H:i') }} WIT</td>
+            <td width="15%"><strong>Dicetak Oleh</strong></td>
+            <td width="35%">: {{ auth()->user()->name ?? 'Administrator' }}</td>
         </tr>
     </table>
 
-    <table>
+    <!-- Data Table -->
+    <table class="data-table">
         <thead>
             <tr>
                 <th width="5%">No</th>
                 <th width="12%">Tanggal</th>
-                <th>Driver</th>
-                <th>Kendaraan</th>
+                <th width="22%">Driver</th>
+                <th width="22%">Kendaraan</th>
                 <th width="8%">TPS</th>
-                <th width="15%">Muatan</th>
-                <th width="15%">Status</th>
+                <th width="15%">Total Muatan</th>
+                <th width="16%">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -112,45 +168,47 @@
             <tr>
                 <td class="text-center">{{ $loop->iteration }}</td>
                 <td class="text-center">{{ \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }}</td>
-                <td>{{ optional($item->driver)->nama }}</td>
-                <td>{{ optional(optional($item->optimasi)->kendaraan)->nama_kendaraan }}</td>
-                <td class="text-center">{{ $item->details->count() }}</td>
-                <td class="text-right">{{ number_format($item->muatan_sekarang, 0) }} Kg</td>
+                <td>{{ optional($item->driver)->nama ?? '-' }}</td>
+                <td>{{ optional(optional($item->optimasi)->kendaraan)->nama_kendaraan ?? '-' }}</td>
+                <td class="text-center font-bold">{{ optional($item->details)->count() ?? 0 }}</td>
+                <td class="text-right font-bold">{{ number_format($item->total_sampah, 0, ',', '.') }} Kg</td>
                 <td class="text-center">{{ $item->status }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="7" class="text-center">Tidak ada data ditemukan.</td>
+                <td colspan="7" class="text-center">Tidak ada data pengangkutan yang sesuai filter.</td>
             </tr>
             @endforelse
         </tbody>
     </table>
 
-    <table class="rekap">
-        <tr>
-            <td style="border:none"><strong>Total Pengangkutan</strong></td>
-            <td style="border:none" class="text-right">{{ $totalPengangkutan }}</td>
-        </tr>
-        <tr>
-            <td style="border:none"><strong>Total TPS</strong></td>
-            <td style="border:none" class="text-right">{{ $totalTPS }}</td>
-        </tr>
-        <tr>
-            <td style="border:none"><strong>Total Sampah</strong></td>
-            <td style="border:none" class="text-right"><strong>{{ number_format($totalSampah, 0) }} Kg</strong></td>
-        </tr>
-    </table>
+    <!-- Summary & Signature -->
+    <div class="summary-wrapper">
+        <table class="rekap-table">
+            <tr>
+                <td><strong>Total Task Pengangkutan</strong></td>
+                <td class="text-right font-bold">{{ $totalPengangkutan }} Task</td>
+            </tr>
+            <tr>
+                <td><strong>Total Titik TPS</strong></td>
+                <td class="text-right font-bold">{{ $totalTPS }} Titik</td>
+            </tr>
+            <tr>
+                <td><strong>Total Volume Sampah</strong></td>
+                <td class="text-right font-bold">{{ number_format($totalSampah, 0, ',', '.') }} Kg</td>
+            </tr>
+        </table>
 
-    <div class="ttd">
         <div class="ttd-box">
-            Jayapura, {{ now()->translatedFormat('d F Y') }}
+            Sentani, {{ now()->translatedFormat('d F Y') }}
             <br>
-            <br>
-            <br>
-            <br>
-            <strong>Administrator</strong>
+            <strong>Dinas Lingkungan Hidup</strong>
+            <br><br><br><br>
+            <span style="text-decoration: underline; font-weight: bold;">{{ auth()->user()->name ?? 'Administrator' }}</span><br>
+            <span>NIP. ........................................</span>
         </div>
-        <div style="clear: both;"></div>
+        <div class="clear"></div>
     </div>
+
 </body>
 </html>

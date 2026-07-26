@@ -1,83 +1,97 @@
 @extends('layouts.app')
 
+@section('title', 'Data TPS - SIMPAS DLH')
+
 @section('content')
 <div class="space-y-6">
 
-    {{-- Header --}}
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    {{-- Header & Action Button --}}
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">Data TPS</h1>
-            <p class="text-sm text-gray-500 mt-1">Kelola seluruh data Tempat Penampungan Sementara.</p>
+            <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Data TPS</h1>
+            <p class="text-sm text-slate-500 mt-1">Kelola Tempat Penampungan Sementara (TPS) sampah.</p>
         </div>
-        <a href="{{ route('admin.tps.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg shadow-sm transition">
-            + Tambah TPS
+        <a href="{{ route('admin.tps.create') }}" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2.5 rounded-xl shadow-xs transition-all hover:shadow-sm">
+            <i class="fas fa-plus"></i>
+            <span>Tambah TPS</span>
         </a>
     </div>
 
     {{-- Flash Message --}}
     @if(session('success'))
-        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-            {{ session('success') }}
+        <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3.5 rounded-xl text-sm flex items-center gap-3 shadow-xs">
+            <i class="fas fa-circle-check text-emerald-600 text-base"></i>
+            <span>{{ session('success') }}</span>
         </div>
     @endif
 
-    {{-- Search --}}
+    {{-- Search Filter --}}
     <form method="GET" class="max-w-md">
-        <div class="flex gap-2">
-            <input type="text" name="search" value="{{ $search }}" placeholder="Cari TPS..." class="w-full border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 shadow-sm">
-            <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-5 rounded-lg text-sm font-medium transition">
+        <div class="relative flex items-center">
+            <i class="fas fa-search absolute left-3.5 text-slate-400 text-sm"></i>
+            <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari kode atau nama TPS..." class="w-full border border-slate-200 rounded-xl pl-10 pr-24 py-2.5 text-sm text-slate-800 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 shadow-xs transition-all">
+            <button type="submit" class="absolute right-1.5 bg-slate-800 hover:bg-slate-900 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition-all">
                 Cari
             </button>
         </div>
     </form>
 
-    {{-- Table --}}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
-        <table class="w-full text-sm text-left text-gray-600">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-100">
-                <tr>
-                    <th class="px-4 py-3.5 text-center w-12">No</th>
-                    <th class="px-4 py-3.5">Kode</th>
-                    <th class="px-4 py-3.5">Nama TPS</th>
-                    <th class="px-4 py-3.5">Alamat</th>
-                    <th class="px-4 py-3.5">Kapasitas</th>
-                    <th class="px-4 py-3.5">Status</th>
-                    <th class="px-4 py-3.5 text-center">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                @forelse($tps as $item)
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-4 py-3 text-center">{{ $tps->firstItem() + $loop->index }}</td>
-                    <td class="px-4 py-3 font-medium text-gray-900">{{ $item->kode_tps }}</td>
-                    <td class="px-4 py-3">{{ $item->nama_tps }}</td>
-                    <td class="px-4 py-3 text-xs">{{ Str::limit($item->alamat, 40) }}</td>
-                    <td class="px-4 py-3">{{ number_format($item->kapasitas) }} Kg</td>
-                    <td class="px-4 py-3">
-                        <span class="px-2.5 py-1 rounded-full text-xs font-medium {{ $item->status == 'Aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                            {{ $item->status }}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3">
-                        <div class="flex items-center justify-center gap-3">
-                            <a href="{{ route('admin.tps.show', $item->id) }}" class="text-blue-600 hover:text-blue-800 font-medium">Detail</a>
-                            <a href="{{ route('admin.tps.edit', $item->id) }}" class="text-yellow-600 hover:text-yellow-800 font-medium">Edit</a>
-                            <form action="{{ route('admin.tps.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus data TPS ini?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Hapus</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="px-4 py-10 text-center text-gray-400 bg-gray-50/50">
-                        Belum ada data TPS.
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+    {{-- Table Card --}}
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                    <tr>
+                        <th class="px-5 py-3.5 text-center w-12">No</th>
+                        <th class="px-5 py-3.5">Kode</th>
+                        <th class="px-5 py-3.5">Nama TPS</th>
+                        <th class="px-5 py-3.5">Alamat</th>
+                        <th class="px-5 py-3.5">Kapasitas</th>
+                        <th class="px-5 py-3.5">Status</th>
+                        <th class="px-5 py-3.5 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($tps as $item)
+                    <tr class="hover:bg-slate-50/60 transition-colors">
+                        <td class="px-5 py-3.5 text-center font-medium text-slate-400">{{ $tps->firstItem() + $loop->index }}</td>
+                        <td class="px-5 py-3.5 font-bold text-slate-800">{{ $item->kode_tps }}</td>
+                        <td class="px-5 py-3.5 font-medium text-slate-800">{{ $item->nama_tps }}</td>
+                        <td class="px-5 py-3.5 text-xs text-slate-500 max-w-xs truncate">{{ Str::limit($item->alamat, 40) }}</td>
+                        <td class="px-5 py-3.5 text-slate-700 font-semibold">{{ number_format($item->kapasitas) }} Kg</td>
+                        <td class="px-5 py-3.5">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold {{ $item->status == 'Aktif' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200' }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $item->status == 'Aktif' ? 'bg-emerald-500' : 'bg-rose-500' }}"></span>
+                                {{ $item->status }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="{{ route('admin.tps.show', $item->id) }}" class="p-2 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Detail">
+                                    <i class="fas fa-eye text-sm"></i>
+                                </a>
+                                <a href="{{ route('admin.tps.edit', $item->id) }}" class="p-2 text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Edit">
+                                    <i class="fas fa-pen-to-square text-sm"></i>
+                                </a>
+                                <form action="{{ route('admin.tps.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus data TPS ini?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus">
+                                        <i class="fas fa-trash-can text-sm"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-5 py-10 text-center text-slate-400">
+                            Belum ada data TPS.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
     {{-- Pagination --}}

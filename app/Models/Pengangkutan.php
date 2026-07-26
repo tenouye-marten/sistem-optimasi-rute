@@ -10,28 +10,35 @@ class Pengangkutan extends Model
     use HasFactory;
 
     protected $fillable = [
+        'optimasi_rute_id',
+        'driver_id',
+        'tanggal',
+        'waktu_mulai',
+        'waktu_selesai',
+        'status',
+        'keterangan',
+        'muatan_sekarang',
+        'kapasitas_kendaraan',
+        'status_perjalanan',
+    ];
 
-    'optimasi_rute_id',
+    protected $appends = ['total_sampah'];
 
-    'driver_id',
+    /*
+    |--------------------------------------------------------------------------
+    | ACCESSOR & HELPER
+    |--------------------------------------------------------------------------
+    */
 
-    'tanggal',
-
-    'waktu_mulai',
-
-    'waktu_selesai',
-
-    'status',
-
-    'keterangan',
-
-    'muatan_sekarang',
-
-    'kapasitas_kendaraan',
-
-    'status_perjalanan',
-
-];
+    /**
+     * Menghitung total volume sampah yang berhasil diangkut dari detail TPS.
+     * Jika status selesai dan muatan_sekarang 0, akan mengambil akumulasi volume_diangkut dari detail TPS.
+     */
+    public function getTotalSampahAttribute()
+    {
+        $fromDetails = $this->details ? $this->details->sum('volume_diangkut') : 0;
+        return $fromDetails > 0 ? $fromDetails : (float) $this->muatan_sekarang;
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -41,24 +48,16 @@ class Pengangkutan extends Model
 
     public function driver()
     {
-        return $this->belongsTo(
-            Driver::class
-        );
+        return $this->belongsTo(Driver::class);
     }
 
     public function optimasi()
     {
-        return $this->belongsTo(
-            OptimasiRute::class,
-            'optimasi_rute_id'
-        );
+        return $this->belongsTo(OptimasiRute::class, 'optimasi_rute_id');
     }
 
     public function details()
-{
-    return $this->hasMany(
-        PengangkutanDetail::class
-    )->orderBy('urutan');
-}
-    
+    {
+        return $this->hasMany(PengangkutanDetail::class)->orderBy('urutan');
+    }
 }

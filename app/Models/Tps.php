@@ -11,38 +11,23 @@ class Tps extends Model
 
     protected $table = 'tps';
 
-   protected $fillable = [
+    protected $fillable = [
+        'kode_tps',
+        'nama_tps',
+        'alamat',
+        'latitude',
+        'longitude',
+        'kapasitas',
+        'status',
+    ];
 
-    'kode_tps',
+    public function drivers()
+    {
+        return $this->belongsToMany(Driver::class, 'driver_tps')->withTimestamps();
+    }
 
-    'nama_tps',
-
-    'alamat',
-
-    'latitude',
-
-    'longitude',
-
-    'kapasitas',
-
-    'status',
-
-];
-
-  public function drivers()
-{
-    return $this->belongsToMany(
-        Driver::class,
-        'driver_tps'
-    )->withTimestamps();
-}
-
-public function pengangkutanTps()
-{
-    return $this->hasMany(
-        PengangkutanTps::class
-    );
-}
-
-
+    public function pengangkutanTps()
+    {
+        return $this->hasMany(PengangkutanTps::class);
+    }
 }

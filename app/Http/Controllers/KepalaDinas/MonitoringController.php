@@ -16,102 +16,59 @@ class MonitoringController extends Controller
      */
     public function index(Request $request)
     {
-        $tanggal = $request->tanggal;
+        // Default ke hari ini jika tanggal tidak diisi di filter
+        $tanggal = $request->tanggal ?? now()->toDateString();
         $driver  = $request->driver;
         $status  = $request->status;
 
-        $pengangkutans = Pengangkutan::with([
-
+        $query = Pengangkutan::with([
             'driver',
-
             'optimasi',
-
             'optimasi.kendaraan',
-
             'details',
-
         ])
-
-        ->when($tanggal, function ($query) use ($tanggal) {
-
-            $query->whereDate(
-                'tanggal',
-                $tanggal
-            );
-
+        ->whereDate('tanggal', $tanggal)
+        ->when($driver, function ($q) use ($driver) {
+            $q->where('driver_id', $driver);
         })
+        ->when($status, function ($q) use ($status) {
+            $q->where('status', $status);
+        });
 
-        ->when($driver, function ($query) use ($driver) {
+        $pengangkutans = (clone $query)
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
-            $query->where(
-                'driver_id',
-                $driver
-            );
+        /*
+        |--------------------------------------------------------------------------
+        | Statistik (Sensitif Tanggal Monitoring)
+        |--------------------------------------------------------------------------
+        */
+        $baseStat = Pengangkutan::whereDate('tanggal', $tanggal);
+        if ($driver) {
+            $baseStat->where('driver_id', $driver);
+        }
 
-        })
+        $totalHariIni = (clone $baseStat)->count();
+        $berjalan = (clone $baseStat)->where('status', 'Sedang Berjalan')->count();
+        $selesai = (clone $baseStat)->where('status', 'Selesai')->count();
+        $belum = (clone $baseStat)->where('status', 'Belum Berangkat')->count();
 
-        ->when($status, function ($query) use ($status) {
-
-            $query->where(
-                'status',
-                $status
-            );
-
-        })
-
-        ->latest()
-
-        ->paginate(10)
-
-        ->withQueryString();
-
-        $totalHariIni = Pengangkutan::whereDate(
-            'tanggal',
-            now()->toDateString()
-        )->count();
-
-        $berjalan = Pengangkutan::where(
-            'status',
-            'Sedang Berjalan'
-        )->count();
-
-        $selesai = Pengangkutan::where(
-            'status',
-            'Selesai'
-        )->count();
-
-        $belum = Pengangkutan::where(
-            'status',
-            'Belum Berangkat'
-        )->count();
-
-        $drivers = Driver::where(
-            'status',
-            'Aktif'
-        )->orderBy('nama')->get();
+        $drivers = Driver::where('status', 'Aktif')->orderBy('nama')->get();
 
         return view(
             'kepala.monitoring.index',
             compact(
-
                 'pengangkutans',
-
                 'drivers',
-
                 'tanggal',
-
                 'driver',
-
                 'status',
-
                 'totalHariIni',
-
                 'berjalan',
-
                 'selesai',
-
                 'belum'
-
             )
         );
     }
@@ -124,57 +81,35 @@ class MonitoringController extends Controller
     public function show(Pengangkutan $pengangkutan)
     {
         $pengangkutan->load([
-
             'driver',
-
             'optimasi',
-
             'optimasi.kendaraan',
-
             'optimasi.pool',
-
             'optimasi.tpa',
-
             'details.tps'
-
         ]);
 
-        $totalTPS = $pengangkutan
-            ->details
-            ->count();
-
-        $selesaiTPS = $pengangkutan
-            ->details
-            ->where('status', 'Selesai')
-            ->count();
+        $totalTPS = $pengangkutan->details->count();
+        $selesaiTPS = $pengangkutan->details->where('status', 'Selesai')->count();
 
         $persenMuatan = 0;
 
-        if ($pengangkutan->kapasitas_kendaraan > 0) {
-
+        if ($pengangkutan->status == 'Selesai') {
+            $persenMuatan = 100;
+        } elseif ($pengangkutan->kapasitas_kendaraan > 0) {
             $persenMuatan = round(
-
-                ($pengangkutan->muatan_sekarang /
-                $pengangkutan->kapasitas_kendaraan) * 100,
-
+                ($pengangkutan->muatan_sekarang / $pengangkutan->kapasitas_kendaraan) * 100,
                 2
-
             );
-
         }
 
         return view(
             'kepala.monitoring.show',
             compact(
-
                 'pengangkutan',
-
                 'totalTPS',
-
                 'selesaiTPS',
-
                 'persenMuatan'
-
             )
         );
     }

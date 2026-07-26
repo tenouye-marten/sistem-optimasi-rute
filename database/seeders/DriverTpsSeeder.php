@@ -11,22 +11,28 @@ class DriverTpsSeeder extends Seeder
     public function run(): void
     {
         $drivers = Driver::orderBy('id')->get();
-
         $tps = Tps::orderBy('id')->get();
 
+        if ($drivers->isEmpty() || $tps->isEmpty()) {
+            return;
+        }
+
+        $totalTps = $tps->count();
         $index = 0;
 
         foreach ($drivers as $driver) {
+            $assignedTpsIds = [];
 
-            $driver->tps()->sync([
+            for ($i = 0; $i < 3; $i++) {
+                if (isset($tps[$index % $totalTps])) {
+                    $assignedTpsIds[] = $tps[$index % $totalTps]->id;
+                }
+                $index++;
+            }
 
-                $tps[$index]->id,
-                $tps[$index + 1]->id,
-                $tps[$index + 2]->id,
-
-            ]);
-
-            $index += 3;
+            if (!empty($assignedTpsIds)) {
+                $driver->tps()->sync($assignedTpsIds);
+            }
         }
     }
 }

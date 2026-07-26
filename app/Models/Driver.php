@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Driver extends Model
 {
@@ -19,40 +19,28 @@ class Driver extends Model
         'status',
     ];
 
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 
-   public function user()
-{
-    return $this->hasOne(User::class);
-}
+    public function kendaraan()
+    {
+        return $this->hasOne(Kendaraan::class);
+    }
 
-public function kendaraan()
-{
-    return $this->hasOne(Kendaraan::class);
-}
+    public function tps()
+    {
+        return $this->belongsToMany(Tps::class, 'driver_tps')->withTimestamps();
+    }
 
+    public function optimasiRutes()
+    {
+        return $this->hasMany(OptimasiRute::class);
+    }
 
-public function tps()
-{
-    return $this->belongsToMany(
-        Tps::class,
-        'driver_tps'
-    )->withTimestamps();
-}
-
-public function optimasiRutes()
-{
-    return $this->hasMany(
-        OptimasiRute::class
-    );
-}
-
-public function pengangkutans()
-{
-    return $this->hasMany(
-        Pengangkutan::class
-    );
-}
-
-
-
+    public function pengangkutans()
+    {
+        return $this->hasMany(Pengangkutan::class);
+    }
 }

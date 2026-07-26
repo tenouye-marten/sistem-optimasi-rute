@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <radialGradient id="globeGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bbf7d0"/>
+      <stop offset="60%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </radialGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    <linearGradient id="handGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#166534"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background Dark Base Canvas (Transparent/Clean Container) -->
+  <g id="logo-container" filter="url(#shadow)">
+
+    <!-- 1. Green Globe -->
+    <circle cx="300" cy="250" r="180" fill="url(#globeGrad)" stroke="#14532d" stroke-width="6"/>
+    <!-- Globe Continent Shapes -->
+    <path d="M 200 150 C 220 130, 280 140, 310 170 C 330 190, 390 180, 410 140 C 370 110, 300 100, 200 150 Z" fill="#22c55e" opacity="0.6"/>
+    <path d="M 150 250 C 180 230, 220 280, 250 260 C 280 240, 350 290, 430 250 C 440 300, 380 380, 300 420 C 220 380, 150 300, 150 250 Z" fill="#22c55e" opacity="0.5"/>
+
+    <!-- 2. Leaves - Left Side -->
+    <g fill="#22c55e" stroke="#14532d" stroke-width="3">
+      <path d="M 120 200 C 70 170, 70 120, 120 140 C 150 160, 140 190, 120 200 Z"/>
+      <path d="M 100 270 C 40 250, 40 190, 100 220 C 130 240, 120 270, 100 270 Z"/>
+      <path d="M 130 330 C 70 320, 60 270, 120 280 C 150 290, 140 320, 130 330 Z"/>
+    </g>
+
+    <!-- Leaves - Right Side -->
+    <g fill="#22c55e" stroke="#14532d" stroke-width="3">
+      <path d="M 480 200 C 530 170, 530 120, 480 140 C 450 160, 460 190, 480 200 Z"/>
+      <path d="M 500 270 C 560 250, 560 190, 500 220 C 470 240, 480 270, 500 270 Z"/>
+      <path d="M 470 330 C 530 320, 540 270, 480 280 C 450 290, 460 320, 470 330 Z"/>
+    </g>
+
+    <!-- 3. Caring Hands Cradling Emblem -->
+    <path d="M 140 350 C 130 260, 200 280, 240 340 C 260 370, 280 410, 300 440 C 320 410, 340 370, 360 340 C 400 280, 470 260, 460 350 C 440 440, 350 460, 300 480 C 250 460, 160 440, 140 350 Z" fill="url(#handGrad)" stroke="#86efac" stroke-width="4"/>
+
+    <!-- 4. Roots Below Base -->
+    <g stroke="#15803d" stroke-width="6" fill="none" stroke-linecap="round">
+      <path d="M 300 470 Q 280 500 240 520 M 300 470 Q 260 510 210 525 M 300 470 Q 300 520 290 535 M 300 470 Q 320 500 360 520 M 300 470 Q 340 510 390 525 M 300 470 Q 310 520 320 535"/>
+    </g>
+
+    <!-- 5. Central Jayapura Shield -->
+    <g transform="translate(0, 10)">
+      <!-- Outer Shield Contour -->
+      <path d="M 300 120 C 380 120, 400 150, 400 230 C 400 310, 350 350, 300 370 C 250 350, 200 310, 200 230 C 200 150, 220 120, 300 120 Z" fill="url(#shieldGrad)" stroke="#ffffff" stroke-width="6"/>
+      <path d="M 300 128 C 372 128, 392 155, 392 230 C 392 302, 345 340, 300 360 C 255 340, 208 302, 208 230 C 208 155, 228 128, 300 128 Z" fill="none" stroke="#fde047" stroke-width="3"/>
+
+      <!-- Left Paddy (Padi - Yellow) -->
+      <path d="M 235 200 Q 220 250 250 300" stroke="url(#goldGrad)" stroke-width="6" fill="none"/>
+      <circle cx="230" cy="210" r="5" fill="url(#goldGrad)"/>
+      <circle cx="225" cy="230" r="5" fill="url(#goldGrad)"/>
+      <circle cx="225" cy="250" r="5" fill="url(#goldGrad)"/>
+      <circle cx="230" cy="270" r="5" fill="url(#goldGrad)"/>
+      <circle cx="240" cy="290" r="5" fill="url(#goldGrad)"/>
+
+      <!-- Right Cotton (Kapas - White) -->
+      <path d="M 365 200 Q 380 250 350 300" stroke="#ffffff" stroke-width="5" fill="none"/>
+      <circle cx="370" cy="210" r="6" fill="#ffffff" stroke="#166534" stroke-width="2"/>
+      <circle cx="375" cy="235" r="6" fill="#ffffff" stroke="#166534" stroke-width="2"/>
+      <circle cx="375" cy="260" r="6" fill="#ffffff" stroke="#166534" stroke-width="2"/>
+      <circle cx="365" cy="285" r="6" fill="#ffffff" stroke="#166534" stroke-width="2"/>
+
+      <!-- Central Tugu / Monument -->
+      <rect x="282" y="160" width="36" height="130" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="3"/>
+      <text x="300" y="185" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e3a8a" text-anchor="middle">3E</text>
+      <text x="300" y="210" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e3a8a" text-anchor="middle">3E</text>
+      <text x="300" y="235" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e3a8a" text-anchor="middle">3E</text>
+      <text x="300" y="260" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e3a8a" text-anchor="middle">3E</text>
+
+      <!-- Red Ribbon JAYAPURA -->
+      <path d="M 230 310 L 370 310 L 360 335 L 240 335 Z" fill="url(#redGrad)" stroke="#ffffff" stroke-width="2"/>
+      <text x="300" y="328" font-family="Arial, sans-serif" font-size="14" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2">JAYAPURA</text>
+
+      <!-- Yellow Motto Banner KANAMBAI UMB AI -->
+      <path d="M 220 348 Q 300 365 380 348 L 375 365 Q 300 382 225 365 Z" fill="url(#goldGrad)" stroke="#1e3a8a" stroke-width="1.5"/>
+      <text x="300" y="361" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#1e293b" text-anchor="middle" letter-spacing="1">KANAMBAI UMB AI</text>
+    </g>
+
+    <!-- 6. Bottom DLH Text Banner -->
+    <g transform="translate(300, 545)">
+      <!-- Leaf Accent Left -->
+      <path d="M -90 -5 C -110 -25 -110 5 -90 0 Z" fill="#22c55e" stroke="#14532d" stroke-width="2"/>
+      <!-- Text DLH -->
+      <text x="0" y="10" font-family="Impact, Arial Black, sans-serif" font-size="44" font-weight="900" fill="#15803d" stroke="#ffffff" stroke-width="3" text-anchor="middle" letter-spacing="4">DLH</text>
+      <!-- Leaf Accent Right -->
+      <path d="M 90 -5 C 110 -25 110 5 90 0 Z" fill="#22c55e" stroke="#14532d" stroke-width="2"/>
+    </g>
+
+  </g>
+</svg>

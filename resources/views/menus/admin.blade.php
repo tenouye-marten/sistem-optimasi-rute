@@ -1,6 +1,5 @@
 <ul class="space-y-1 text-sm">
     @php
-        // Helper function untuk menentukan class active
         $activeClass = 'bg-green-600 text-white font-semibold shadow-md';
         $inactiveClass = 'text-gray-700 hover:bg-green-50 hover:text-green-700';
     @endphp

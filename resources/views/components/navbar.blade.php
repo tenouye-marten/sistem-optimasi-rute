@@ -9,22 +9,20 @@
             <button
                 id="menuButton"
                 class="md:hidden text-2xl font-bold text-white focus:outline-none">
-
                 ☰
-
             </button>
 
-            {{-- Logo --}}
-            <div>
-
-                <h1 class="text-xl font-bold text-white">
-                    SIMPAS DLH
-                </h1>
-
-                <p class="text-xs text-green-100">
-                    Sistem Optimasi Rute Pengangkutan Sampah
-                </p>
-
+            {{-- Logo Brand --}}
+            <div class="flex items-center gap-3">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo DLH Jayapura" class="w-10 h-10 object-contain rounded-full bg-white/10 p-0.5 shadow-sm border border-white/20">
+                <div>
+                    <h1 class="text-xl font-bold text-white leading-tight">
+                        SIMPAS DLH
+                    </h1>
+                    <p class="text-xs text-green-100">
+                        Sistem Optimasi Rute Pengangkutan Sampah
+                    </p>
+                </div>
             </div>
 
         </div>
@@ -33,28 +31,21 @@
         <div class="flex items-center gap-5">
 
             <div class="hidden md:block text-right">
-
                 <p class="font-semibold text-white">
                     {{ auth()->user()->name }}
                 </p>
-
                 <p class="text-xs text-green-100 capitalize">
                     {{ auth()->user()->getRoleNames()->first() }}
                 </p>
-
             </div>
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-
                 <button
                     type="submit"
                     class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700">
-
                     Logout
-
                 </button>
-
             </form>
 
         </div>

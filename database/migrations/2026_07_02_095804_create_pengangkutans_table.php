@@ -9,15 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengangkutans', function (Blueprint $table) {
-
             $table->id();
 
-            /*
-            |--------------------------------------------------------------------------
-            | Relasi
-            |--------------------------------------------------------------------------
-            */
-
+            // Relasi
             $table->foreignId('optimasi_rute_id')
                 ->constrained('optimasi_rutes')
                 ->cascadeOnUpdate()
@@ -28,87 +22,35 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
-            /*
-            |--------------------------------------------------------------------------
-            | Waktu
-            |--------------------------------------------------------------------------
-            */
-
+            // Waktu
             $table->date('tanggal');
-
             $table->timestamp('waktu_mulai')->nullable();
-
             $table->timestamp('waktu_selesai')->nullable();
 
-            /*
-            |--------------------------------------------------------------------------
-            | Status Pengangkutan
-            |--------------------------------------------------------------------------
-            */
-
+            // Status Pengangkutan
             $table->enum('status', [
-
                 'Belum Berangkat',
-
                 'Sedang Berjalan',
-
                 'Selesai',
-
             ])->default('Belum Berangkat');
 
-            /*
-            |--------------------------------------------------------------------------
-            | Status Perjalanan
-            |--------------------------------------------------------------------------
-            */
-
+            // Status Perjalanan
             $table->enum('status_perjalanan', [
-
                 'Menuju TPS',
-
                 'Menuju TPA',
                 'Selesai',
-
             ])->default('Menuju TPS');
 
-            /*
-            |--------------------------------------------------------------------------
-            | Muatan Kendaraan
-            |--------------------------------------------------------------------------
-            */
+            // Muatan Kendaraan
+            $table->decimal('kapasitas_kendaraan', 10, 2);
+            $table->decimal('muatan_sekarang', 10, 2)->default(0);
 
-            $table->decimal('kapasitas_kendaraan',10,2);
-
-            $table->decimal('muatan_sekarang',10,2)
-
-                ->default(0);
-
-            /*
-            |--------------------------------------------------------------------------
-            | Catatan
-            |--------------------------------------------------------------------------
-            */
-
-            $table->text('keterangan')
-
-                ->nullable();
-
+            // Catatan
+            $table->text('keterangan')->nullable();
             $table->timestamps();
 
-            /*
-            |--------------------------------------------------------------------------
-            | Satu Driver Satu Pengangkutan / Hari
-            |--------------------------------------------------------------------------
-            */
-
-            $table->unique([
-
-                'driver_id',
-
-                'tanggal'
-
-            ]);
-
+            // Satu Driver Satu Pengangkutan / Hari
+            $table->unique(['driver_id', 'tanggal']);
         });
     }
 

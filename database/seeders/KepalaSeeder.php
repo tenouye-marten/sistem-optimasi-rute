@@ -13,8 +13,9 @@ class KepalaSeeder extends Seeder
         $kepala = User::firstOrCreate(
             ['email' => 'kepala@dlh.com'],
             [
-                'name' => 'Kepala DLH',
+                'name' => 'Kepala Dinas',
                 'password' => Hash::make('password'),
+                'email_verified_at' => now(),
             ]
         );
 

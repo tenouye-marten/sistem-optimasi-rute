@@ -5,7 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>@yield('title', config('app.name'))</title>
+    <title>@yield('title', config('app.name', 'SIMPAS DLH'))</title>
+
+    <!-- Favicon / Logo Icon PNG -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     @vite([
         'resources/css/app.css',

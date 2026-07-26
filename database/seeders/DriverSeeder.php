@@ -13,7 +13,6 @@ class DriverSeeder extends Seeder
     public function run(): void
     {
         $drivers = [
-
             [
                 'kode_driver'   => 'DRV001',
                 'nama'          => 'Yohanis Wenda',
@@ -23,7 +22,6 @@ class DriverSeeder extends Seeder
                 'jenis_kelamin' => 'L',
                 'status'        => 'Aktif',
             ],
-
             [
                 'kode_driver'   => 'DRV002',
                 'nama'          => 'Markus Yoku',
@@ -33,7 +31,6 @@ class DriverSeeder extends Seeder
                 'jenis_kelamin' => 'L',
                 'status'        => 'Aktif',
             ],
-
             [
                 'kode_driver'   => 'DRV003',
                 'nama'          => 'Samuel Wally',
@@ -43,7 +40,6 @@ class DriverSeeder extends Seeder
                 'jenis_kelamin' => 'L',
                 'status'        => 'Aktif',
             ],
-
             [
                 'kode_driver'   => 'DRV004',
                 'nama'          => 'Petrus Kogoya',
@@ -53,7 +49,6 @@ class DriverSeeder extends Seeder
                 'jenis_kelamin' => 'L',
                 'status'        => 'Aktif',
             ],
-
             [
                 'kode_driver'   => 'DRV005',
                 'nama'          => 'Yakobus Mote',
@@ -63,11 +58,13 @@ class DriverSeeder extends Seeder
                 'jenis_kelamin' => 'L',
                 'status'        => 'Aktif',
             ],
-
         ];
 
-        foreach ($drivers as $driver) {
-            Driver::create($driver);
+        foreach ($drivers as $driverData) {
+            Driver::firstOrCreate(
+                ['kode_driver' => $driverData['kode_driver']],
+                $driverData
+            );
         }
     }
 }

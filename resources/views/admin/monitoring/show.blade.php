@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Detail Monitoring - SIMPAS DLH')
+
 @section('content')
 <div class="max-w-5xl mx-auto space-y-6">
 
@@ -18,10 +20,10 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         @php
             $info = [
-                'Driver'     => $pengangkutan->driver->nama,
-                'Kendaraan'  => $pengangkutan->optimasi->kendaraan->nama_kendaraan,
-                'Pool'       => $pengangkutan->optimasi->pool->nama_pool,
-                'TPA'        => $pengangkutan->optimasi->tpa->nama_tpa,
+                'Driver'     => $pengangkutan->driver->nama ?? '-',
+                'Kendaraan'  => $pengangkutan->optimasi->kendaraan->nama_kendaraan ?? '-',
+                'Pool'       => $pengangkutan->optimasi->pool->nama_pool ?? '-',
+                'TPA'        => $pengangkutan->optimasi->tpa->nama_tpa ?? '-',
             ];
         @endphp
         @foreach($info as $label => $value)
@@ -44,7 +46,7 @@
         </div>
         <div>
             <p class="text-gray-500 font-medium">Status Perjalanan</p>
-            <span class="inline-block mt-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-semibold">{{ $pengangkutan->status_perjalanan }}</span>
+            <span class="inline-block mt-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-semibold">{{ $pengangkutan->status_perjalanan ?? '-' }}</span>
         </div>
     </div>
 
@@ -53,9 +55,19 @@
         <div class="flex justify-between items-end mb-3">
             <div>
                 <h3 class="font-bold text-gray-800">Progress Muatan</h3>
-                <p class="text-xs text-gray-500 mt-1">{{ $persenMuatan }}% dari kapasitas</p>
+                <p class="text-xs text-gray-500 mt-1">
+                    @if($pengangkutan->status == 'Selesai')
+                        <span class="text-green-600 font-semibold">100% (Selesai Diangkut & Dibuang di TPA)</span>
+                    @else
+                        {{ $persenMuatan }}% dari kapasitas
+                    @endif
+                </p>
             </div>
-            <span class="font-bold text-gray-900">{{ number_format($pengangkutan->muatan_sekarang) }} / {{ number_format($pengangkutan->kapasitas_kendaraan) }} Kg</span>
+            @if($pengangkutan->status == 'Selesai')
+                <span class="font-bold text-green-600 text-lg">{{ number_format($pengangkutan->total_sampah) }} Kg</span>
+            @else
+                <span class="font-bold text-gray-900">{{ number_format($pengangkutan->muatan_sekarang) }} / {{ number_format($pengangkutan->kapasitas_kendaraan) }} Kg</span>
+            @endif
         </div>
         <div class="w-full bg-gray-100 rounded-full h-4 overflow-hidden border border-gray-200">
             <div class="bg-green-600 h-full rounded-full transition-all duration-500" style="width: {{ min($persenMuatan, 100) }}%"></div>
@@ -80,8 +92,8 @@
                 @foreach($pengangkutan->details as $detail)
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-3 text-center">{{ $detail->urutan }}</td>
-                    <td class="px-6 py-3 font-medium text-gray-900">{{ $detail->tps->nama_tps }}</td>
-                    <td class="px-6 py-3">{{ number_format($detail->volume_diangkut) }}</td>
+                    <td class="px-6 py-3 font-medium text-gray-900">{{ $detail->tps->nama_tps ?? '-' }}</td>
+                    <td class="px-6 py-3 font-semibold text-gray-800">{{ number_format($detail->volume_diangkut) }}</td>
                     <td class="px-6 py-3">
                         @php
                             $statusColors = [
