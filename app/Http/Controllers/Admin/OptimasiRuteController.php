@@ -303,17 +303,25 @@ public function store(Request $request)
         |--------------------------------------------------------------------------
         */
 
-        $last = OptimasiRute::latest('id')->first();
+        $existingKodes = OptimasiRute::pluck('kode_optimasi')->map(fn($k) => trim($k))->toArray();
+        $maxNomor = 0;
+        foreach ($existingKodes as $k) {
+            if (preg_match('/(\d+)/', $k, $match)) {
+                $num = (int) $match[1];
+                if ($num > $maxNomor) {
+                    $maxNomor = $num;
+                }
+            }
+        }
 
-        $nomor = $last
-            ? ((int) substr($last->kode_optimasi, 3)) + 1
-            : 1;
+        $nomor = $maxNomor + 1;
 
-        $kode = 'OPT' . str_pad(
-            $nomor,
-            4,
-            '0',
-            STR_PAD_LEFT
+        do {
+            $kode = 'OPT' . str_pad($nomor, 4, '0', STR_PAD_LEFT);
+            $nomor++;
+        } while (
+            in_array($kode, $existingKodes) ||
+            OptimasiRute::where('kode_optimasi', $kode)->orWhere('kode_optimasi', 'like', $kode . '%')->exists()
         );
 
         /*

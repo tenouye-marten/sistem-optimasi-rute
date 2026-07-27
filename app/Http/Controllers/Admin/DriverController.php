@@ -53,23 +53,26 @@ class DriverController extends Controller
             'status'           => 'required|in:Aktif,Tidak Aktif',
         ]);
 
-     $lastDriver = Driver::orderByDesc('id')->first();
+        $existingKodes = Driver::pluck('kode_driver')->map(fn($k) => trim($k))->toArray();
+        $maxNomor = 0;
+        foreach ($existingKodes as $k) {
+            if (preg_match('/(\d+)/', $k, $match)) {
+                $num = (int) $match[1];
+                if ($num > $maxNomor) {
+                    $maxNomor = $num;
+                }
+            }
+        }
 
-$nomor = 1;
+        $nomor = $maxNomor + 1;
 
-if ($lastDriver) {
-
-    preg_match('/(\d+)$/', $lastDriver->kode_driver, $match);
-
-    if (isset($match[1])) {
-
-        $nomor = (int) $match[1] + 1;
-
-    }
-
-}
-
-$kodeDriver = 'DRV' . str_pad($nomor, 3, '0', STR_PAD_LEFT);
+        do {
+            $kodeDriver = 'DRV' . str_pad($nomor, 3, '0', STR_PAD_LEFT);
+            $nomor++;
+        } while (
+            in_array($kodeDriver, $existingKodes) ||
+            Driver::where('kode_driver', $kodeDriver)->orWhere('kode_driver', 'like', $kodeDriver . '%')->exists()
+        );
 
         Driver::create([
             'kode_driver'      => $kodeDriver,

@@ -214,17 +214,25 @@ class PengangkutanController extends Controller
         &$pengangkutan
     ) {
 
-        $last = Pengangkutan::latest()->first();
+        $existingKodes = Pengangkutan::pluck('kode_pengangkutan')->map(fn($k) => trim($k))->toArray();
+        $maxNomor = 0;
+        foreach ($existingKodes as $k) {
+            if (preg_match('/(\d+)/', $k, $match)) {
+                $num = (int) $match[1];
+                if ($num > $maxNomor) {
+                    $maxNomor = $num;
+                }
+            }
+        }
 
-        $nomor = $last
-            ? ((int) substr($last->kode_pengangkutan, 3)) + 1
-            : 1;
+        $nomor = $maxNomor + 1;
 
-        $kode = 'PNG' . str_pad(
-            $nomor,
-            3,
-            '0',
-            STR_PAD_LEFT
+        do {
+            $kode = 'PNG' . str_pad($nomor, 3, '0', STR_PAD_LEFT);
+            $nomor++;
+        } while (
+            in_array($kode, $existingKodes) ||
+            Pengangkutan::where('kode_pengangkutan', $kode)->orWhere('kode_pengangkutan', 'like', $kode . '%')->exists()
         );
 
         /*

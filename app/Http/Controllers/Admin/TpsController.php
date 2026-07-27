@@ -49,13 +49,26 @@ public function index(Request $request)
         'status'     => 'required|in:Aktif,Tidak Aktif',
     ]);
 
-    $last = Tps::latest()->first();
+    $existingKodes = Tps::pluck('kode_tps')->map(fn($k) => trim($k))->toArray();
+    $maxNomor = 0;
+    foreach ($existingKodes as $k) {
+        if (preg_match('/(\d+)/', $k, $match)) {
+            $num = (int) $match[1];
+            if ($num > $maxNomor) {
+                $maxNomor = $num;
+            }
+        }
+    }
 
-    $nomor = $last
-        ? ((int) substr($last->kode_tps, 3)) + 1
-        : 1;
+    $nomor = $maxNomor + 1;
 
-    $kode = 'TPS' . str_pad($nomor, 3, '0', STR_PAD_LEFT);
+    do {
+        $kode = 'TPS' . str_pad($nomor, 3, '0', STR_PAD_LEFT);
+        $nomor++;
+    } while (
+        in_array($kode, $existingKodes) ||
+        Tps::where('kode_tps', $kode)->orWhere('kode_tps', 'like', $kode . '%')->exists()
+    );
 
     Tps::create([
 

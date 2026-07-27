@@ -73,17 +73,25 @@ class TpaController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $last = Tpa::latest()->first();
+        $existingKodes = Tpa::pluck('kode_tpa')->map(fn($k) => trim($k))->toArray();
+        $maxNomor = 0;
+        foreach ($existingKodes as $k) {
+            if (preg_match('/(\d+)/', $k, $match)) {
+                $num = (int) $match[1];
+                if ($num > $maxNomor) {
+                    $maxNomor = $num;
+                }
+            }
+        }
 
-        $nomor = $last
-            ? ((int) substr($last->kode_tpa, 3)) + 1
-            : 1;
+        $nomor = $maxNomor + 1;
 
-        $kode = 'TPA' . str_pad(
-            $nomor,
-            3,
-            '0',
-            STR_PAD_LEFT
+        do {
+            $kode = 'TPA' . str_pad($nomor, 3, '0', STR_PAD_LEFT);
+            $nomor++;
+        } while (
+            in_array($kode, $existingKodes) ||
+            Tpa::where('kode_tpa', $kode)->orWhere('kode_tpa', 'like', $kode . '%')->exists()
         );
 
         /*

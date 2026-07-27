@@ -136,28 +136,26 @@ class KendaraanController extends Controller
 |--------------------------------------------------------------------------
 */
 
-$last = Kendaraan::orderByDesc('id')->first();
+        $existingKodes = Kendaraan::pluck('kode_kendaraan')->map(fn($k) => trim($k))->toArray();
+        $maxNomor = 0;
+        foreach ($existingKodes as $k) {
+            if (preg_match('/(\d+)/', $k, $match)) {
+                $num = (int) $match[1];
+                if ($num > $maxNomor) {
+                    $maxNomor = $num;
+                }
+            }
+        }
 
-$nomor = 1;
+        $nomor = $maxNomor + 1;
 
-if ($last) {
-
-    preg_match('/(\d+)$/', $last->kode_kendaraan, $match);
-
-    if (isset($match[1])) {
-
-        $nomor = (int) $match[1] + 1;
-
-    }
-
-}
-
-$kode = 'KDR' . str_pad(
-    $nomor,
-    3,
-    '0',
-    STR_PAD_LEFT
-);
+        do {
+            $kode = 'KDR' . str_pad($nomor, 3, '0', STR_PAD_LEFT);
+            $nomor++;
+        } while (
+            in_array($kode, $existingKodes) ||
+            Kendaraan::where('kode_kendaraan', $kode)->orWhere('kode_kendaraan', 'like', $kode . '%')->exists()
+        );
         /*
         |--------------------------------------------------------------------------
         | Simpan Data

@@ -48,15 +48,26 @@ class PoolController extends Controller
         ]);
 
         // Generate Kode Pool
-        $lastPool = Pool::latest()->first();
-
-        if ($lastPool) {
-            $nomor = (int) substr($lastPool->kode_pool, 3) + 1;
-        } else {
-            $nomor = 1;
+        $existingKodes = Pool::pluck('kode_pool')->map(fn($k) => trim($k))->toArray();
+        $maxNomor = 0;
+        foreach ($existingKodes as $k) {
+            if (preg_match('/(\d+)/', $k, $match)) {
+                $num = (int) $match[1];
+                if ($num > $maxNomor) {
+                    $maxNomor = $num;
+                }
+            }
         }
 
-        $kodePool = 'POL' . str_pad($nomor, 3, '0', STR_PAD_LEFT);
+        $nomor = $maxNomor + 1;
+
+        do {
+            $kodePool = 'POL' . str_pad($nomor, 3, '0', STR_PAD_LEFT);
+            $nomor++;
+        } while (
+            in_array($kodePool, $existingKodes) ||
+            Pool::where('kode_pool', $kodePool)->orWhere('kode_pool', 'like', $kodePool . '%')->exists()
+        );
 
         Pool::create([
             'kode_pool' => $kodePool,
